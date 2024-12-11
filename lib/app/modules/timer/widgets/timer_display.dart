@@ -44,7 +44,7 @@ class TimerDisplay extends StatelessWidget {
         Column(
           children: [
             // TODO 레벨 및 쉬는 시간 지정 해야함
-            Obx(() => Text("Level 10",
+            Obx(() => Text("Level ${controller.testLevelValue}",
               style: const TextStyle(
               fontSize: 15,
               color: Colors.grey,

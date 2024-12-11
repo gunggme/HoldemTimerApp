@@ -82,20 +82,6 @@ class TimerSettingView extends GetView<TimerController> {
                 ],
               ),
             ),
-            // 오른쪽 미리보기 영역
-            Container(
-              width: MediaQuery.of(context).size.width * 0.4,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TimerDisplay(
-                    controller: controller,
-                    size: 300,
-                    showSpinner: false,
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
       ),

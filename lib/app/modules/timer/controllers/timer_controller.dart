@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 class TimerController extends GetxController with GetSingleTickerProviderStateMixin {
   final RxInt initialMinutes = 1.obs;
   final RxInt initialSeconds = 0.obs;
+
+  final RxInt testLevelValue = 1.obs;
   
   final RxInt minutes = 1.obs;
   final RxInt seconds = 0.obs;

@@ -15,10 +15,10 @@ class TimerPainter extends CustomPainter {
     // 1. 배경 눈금 그리기
     final tickPath = Path();
     const tickLength = 20.0;
-    const totalTicks = 50;
+    const totalTicks = 30;
 
     for (var i = 0; i < totalTicks; i++) {
-      final angle = (math.pi * i - 20) / (totalTicks / 1.36);
+      final angle = (math.pi * i - 10) / (totalTicks / 1.34);
 
       final x1 = center.dx + (radius - tickLength) * math.cos(angle);
       final y1 = center.dy + (radius - tickLength) * math.sin(angle);
@@ -58,7 +58,7 @@ class TimerPainter extends CustomPainter {
       final progressPath = Path();
       
       // 시작점을 살짝 아래에서 시작
-      final startAngle = -0.65; // 시작 각도를 약간 아래로 조정
+      final startAngle = -0.55; // 시작 각도를 약간 아래로 조정 
       final endAngle = math.pi + 0.45; // 끝 각도도 약간 연장
       
       // 진행된 만큼의 점들을 계산
