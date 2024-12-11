@@ -84,7 +84,7 @@ class TimerPainter extends CustomPainter {
       canvas.drawPath(
         progressPath,
         Paint()
-          ..color = const Color(0xFF1FDC1F)
+          ..color = const Color(0xFF9438F5)
           ..strokeWidth = 20
           ..style = PaintingStyle.stroke
           ..strokeCap = StrokeCap.square
