@@ -45,15 +45,6 @@ class AnteText extends StatelessWidget {
               fontWeight: FontWeight.w400,
             ),
           ),
-          const SizedBox(height: 8),
-          const Text(
-            '-',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
         ],
       ),
     );

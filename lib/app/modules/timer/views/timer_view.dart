@@ -6,9 +6,19 @@ import '../widgets/timer_controls.dart';
 import '../widgets/blinds_text.dart';
 import '../widgets/ante_text.dart';
 import '../widgets/status_info.dart';
+import '../widgets/setting_dialog.dart';
 
 class TimerView extends GetView<TimerController> {
   const TimerView({Key? key}) : super(key: key);
+
+  void _showSettingDialog() {
+    Get.dialog(
+      const SettingDialog(),
+      barrierColor: Colors.black.withOpacity(0.7),
+      transitionDuration: const Duration(milliseconds: 200),
+      barrierDismissible: true,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +43,25 @@ class TimerView extends GetView<TimerController> {
             size: 22,
           ),
         ),
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(right: 8),
+            decoration: BoxDecoration(
+              color: const Color(0xFF8B0000),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: TextButton(
+              onPressed: _showSettingDialog,
+              child: const Text(
+                '설정',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       body: Row(
         children: [
@@ -70,7 +99,8 @@ class TimerView extends GetView<TimerController> {
           ),
           Expanded(
             flex: 1,
-              child: StatusInfo())
+            child: StatusInfo(),
+          ),
         ],
       ),
     );

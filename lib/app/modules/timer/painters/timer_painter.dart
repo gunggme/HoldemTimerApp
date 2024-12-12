@@ -58,7 +58,7 @@ class TimerPainter extends CustomPainter {
       final progressPath = Path();
       
       // 시작점을 살짝 아래에서 시작
-      final startAngle = -0.55; // 시작 각도를 약간 아래로 조정 
+      final startAngle = -0.55; // 시작 각도를 약간 아래로 조정
       final endAngle = math.pi + 0.45; // 끝 각도도 약간 연장
       
       // 진행된 만큼의 점들을 계산

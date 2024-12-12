@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controllers/timer_controller.dart';
 
-class StatusInfo extends StatelessWidget {
+class StatusInfo extends GetView<TimerController> {
   const StatusInfo({Key? key}) : super(key: key);
 
   @override
@@ -20,10 +22,10 @@ class StatusInfo extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 5),
-          _buildStatusRow('Players', '10/12'),
-          _buildStatusRow('Entries', '10'),
-          _buildStatusRow('Rebuys', '0'),
-          _buildStatusRow('Add-ons', '0'),
+          Obx(() => _buildStatusRow('Players', '${controller.currentPlayers}/${controller.maxPlayers}')),
+          Obx(() => _buildStatusRow('Entries', controller.entries.toString())),
+          Obx(() => _buildStatusRow('Rebuys', controller.rebuys.toString())),
+          Obx(() => _buildStatusRow('Add-ons', controller.addOns.toString())),
           const SizedBox(height: 5),
           const Text(
             'Statistics',
@@ -34,8 +36,8 @@ class StatusInfo extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 5),
-          _buildStatusRow('Total chip', '15,000,000'),
-          _buildStatusRow('Total prize', '1,330,000'),
+          Obx(() => _buildStatusRow('Total chip', controller.totalChips.value.toString())),
+          Obx(() => _buildStatusRow('Total prize', controller.totalPrize.value.toString())),
           const SizedBox(height: 5),
           const Text(
             'Prize',
@@ -46,9 +48,9 @@ class StatusInfo extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 5),
-          _buildPrizeRow('1st', '1,300,000'),
-          _buildPrizeRow('2nd', '20,000'),
-          _buildPrizeRow('3rd', '10,000'),
+          Obx(() => _buildPrizeRow('1st', (controller.totalPrize.value * 0.98).round().toString())),
+          Obx(() => _buildPrizeRow('2nd', (controller.totalPrize.value * 0.015).round().toString())),
+          Obx(() => _buildPrizeRow('3rd', (controller.totalPrize.value * 0.005).round().toString())),
         ],
       ),
     );

@@ -5,6 +5,7 @@ import 'app/routes/app_pages.dart';
 
 void main() {
   Get.put(TimerController());
+
   runApp(const MyApp());
 }
 

@@ -18,6 +18,71 @@ class TimerController extends GetxController with GetSingleTickerProviderStateMi
   late Animation<double> _progressAnimation;
   final Rx<double> animatedProgress = 0.0.obs;
 
+  final RxInt currentPlayers = 10.obs;
+  final RxInt maxPlayers = 12.obs;
+  final RxInt entries = 10.obs;
+  final RxInt rebuys = 0.obs;
+  final RxInt addOns = 0.obs;
+
+  final RxInt totalChips = 15000000.obs;
+  final RxInt totalPrize = 1330000.obs;
+
+  void incrementPlayers() {
+    if (currentPlayers < maxPlayers.value) {
+      currentPlayers.value++;
+      _updateTotalChipsAndPrize();
+    }
+  }
+
+  void decrementPlayers() {
+    if (currentPlayers > 0) {
+      currentPlayers.value--;
+      _updateTotalChipsAndPrize();
+    }
+  }
+
+  void incrementEntries() {
+    entries.value++;
+    _updateTotalChipsAndPrize();
+  }
+
+  void decrementEntries() {
+    if (entries > 0) {
+      entries.value--;
+      _updateTotalChipsAndPrize();
+    }
+  }
+
+  void incrementRebuys() {
+    rebuys.value++;
+    _updateTotalChipsAndPrize();
+  }
+
+  void decrementRebuys() {
+    if (rebuys > 0) {
+      rebuys.value--;
+      _updateTotalChipsAndPrize();
+    }
+  }
+
+  void incrementAddOns() {
+    addOns.value++;
+    _updateTotalChipsAndPrize();
+  }
+
+  void decrementAddOns() {
+    if (addOns > 0) {
+      addOns.value--;
+      _updateTotalChipsAndPrize();
+    }
+  }
+
+  void _updateTotalChipsAndPrize() {
+    int baseChips = 1500000;
+    totalChips.value = baseChips * entries.value;
+    totalPrize.value = (totalChips.value * 0.1).round();
+  }
+
   @override
   void onInit() {
     super.onInit();
