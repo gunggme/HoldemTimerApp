@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import '../controllers/timer_controller.dart';
 import '../widgets/setting_controls.dart';
 
-class TimerSettingView extends GetView<TimerController> {
-  const TimerSettingView({Key? key}) : super(key: key);
+class InGameSettingView extends GetView<TimerController> {
+  const InGameSettingView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,4 +41,4 @@ class TimerSettingView extends GetView<TimerController> {
       ),
     );
   }
-}
+} 

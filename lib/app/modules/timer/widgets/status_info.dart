@@ -10,49 +10,68 @@ class StatusInfo extends GetView<TimerController> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          _buildDivider(),
           const Text(
             'Status',
             style: TextStyle(
               color: Colors.grey,
-              fontSize: 16,
+              fontSize: 13,
               fontWeight: FontWeight.w500,
             ),
           ),
+          _buildTitleDivider(),
           const SizedBox(height: 5),
           Obx(() => _buildStatusRow('Players', '${controller.currentPlayers}/${controller.maxPlayers}')),
           Obx(() => _buildStatusRow('Entries', controller.entries.toString())),
           Obx(() => _buildStatusRow('Rebuys', controller.rebuys.toString())),
           Obx(() => _buildStatusRow('Add-ons', controller.addOns.toString())),
           const SizedBox(height: 5),
+          _buildDivider(),
+          const SizedBox(height: 1),
           const Text(
             'Statistics',
             style: TextStyle(
               color: Colors.grey,
-              fontSize: 16,
+              fontSize: 13,
               fontWeight: FontWeight.w500,
             ),
           ),
+          _buildTitleDivider(),
           const SizedBox(height: 5),
           Obx(() => _buildStatusRow('Total chip', controller.totalChips.value.toString())),
           Obx(() => _buildStatusRow('Total prize', controller.totalPrize.value.toString())),
           const SizedBox(height: 5),
+          _buildDivider(),
+          const SizedBox(height: 1),
           const Text(
-            'Prize',
+            'Join QRCode',
             style: TextStyle(
               color: Colors.grey,
-              fontSize: 16,
+              fontSize: 13,
               fontWeight: FontWeight.w500,
             ),
           ),
+          _buildTitleDivider(),
           const SizedBox(height: 5),
-          Obx(() => _buildPrizeRow('1st', (controller.totalPrize.value * 0.98).round().toString())),
-          Obx(() => _buildPrizeRow('2nd', (controller.totalPrize.value * 0.015).round().toString())),
-          Obx(() => _buildPrizeRow('3rd', (controller.totalPrize.value * 0.005).round().toString())),
         ],
       ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Container(
+      height: 2,
+      color: const Color(0xFF4E4E4E),
+    );
+  }
+
+  Widget _buildTitleDivider() {
+    return Container(
+      height: 1,
+      color: const Color(0xFF4E4E4E),
     );
   }
 
@@ -66,7 +85,7 @@ class StatusInfo extends GetView<TimerController> {
             label,
             style: const TextStyle(
               color: Colors.grey,
-              fontSize: 14,
+              fontSize: 11,
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -75,7 +94,7 @@ class StatusInfo extends GetView<TimerController> {
             value,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
           ),

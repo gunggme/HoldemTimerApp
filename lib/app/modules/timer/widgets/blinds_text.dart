@@ -1,46 +1,99 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-class BlindsText extends StatelessWidget{
+class BlindsText extends StatelessWidget {
+  const BlindsText({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    TextStyle blindsTextStyle = TextStyle(
-      color:Colors.grey[400]!,
-    );
-
-    TextStyle blindsValueStyle = TextStyle(
-      color: Colors.white,
-      fontSize: 25,
-      fontWeight: FontWeight.w700,
-    );
-
-    return Container(
-      height: 200,
-      width: 200,
-      decoration: BoxDecoration(
-        color: const Color(0xFF1F1F1F),
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: const Color(0xFF2C2C2C),
-          style: BorderStyle.solid,
-          width: 3
-        )
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // small blinds Text
-          Text( "Small Blind", style: blindsTextStyle, ),
-          // TODO small blinds logic
-          Text( "100", style: blindsValueStyle, ),
-          // bag blinds Text
-          Text( "Big Blind", style: blindsTextStyle, ),
-          // Todo Big Blinds Logic
-          Text( "200", style: blindsValueStyle, ),
-        ],
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: 120,
+          height: 200,
+          decoration: BoxDecoration(
+            color: const Color(0xFF1F1F1F),
+            border: Border.all(
+              color: Colors.white,
+              width: 1,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Text(
+                'Small Blind',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              SizedBox(height: 4),
+              Text(
+                '-',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Big Blind',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              SizedBox(height: 4),
+              Text(
+                '-',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 4),
+              Text(
+                "Ante",
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              Text(
+                '-',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 4),
+        const Text(
+          'Next',
+          style: TextStyle(
+            color: Colors.grey,
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        const Text(
+          '-/-',
+          style: TextStyle(
+            color: Colors.grey,
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
-  
 }
