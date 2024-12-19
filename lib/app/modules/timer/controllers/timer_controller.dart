@@ -17,6 +17,7 @@ class TimerController extends GetxController with GetSingleTickerProviderStateMi
   late AnimationController _animationController;
   late Animation<double> _progressAnimation;
   final Rx<double> animatedProgress = 0.0.obs;
+  double _lastProgress = 0.0;
 
   final RxInt currentPlayers = 10.obs;
   final RxInt maxPlayers = 12.obs;
@@ -88,20 +89,15 @@ class TimerController extends GetxController with GetSingleTickerProviderStateMi
     super.onInit();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
+      duration: const Duration(milliseconds: 1000),
+    )..addListener(() {
+      animatedProgress.value = _progressAnimation.value;
+    });
 
     _progressAnimation = Tween<double>(
       begin: 0.0,
       end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
-
-    _progressAnimation.addListener(() {
-      animatedProgress.value = _progressAnimation.value;
-    });
+    ).animate(_animationController);
   }
 
   @override
@@ -122,6 +118,7 @@ class TimerController extends GetxController with GetSingleTickerProviderStateMi
       isRunning.value = true;
       if (!isStarted.value) {
         isStarted.value = true;
+        _lastProgress = 0.0;
       }
       _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
         if (seconds.value > 0) {
@@ -149,6 +146,7 @@ class TimerController extends GetxController with GetSingleTickerProviderStateMi
     minutes.value = initialMinutes.value;
     seconds.value = initialSeconds.value;
     animatedProgress.value = 0.0;
+    _lastProgress = 0.0;
     _updateProgress();
   }
 
@@ -159,19 +157,24 @@ class TimerController extends GetxController with GetSingleTickerProviderStateMi
     final currentSeconds = (minutes.value * 60 + seconds.value);
     final targetProgress = 1.0 - (currentSeconds / totalSeconds);
 
+    final animationDuration = const Duration(milliseconds: 1000);
+    
+    _animationController.duration = animationDuration;
+
     _progressAnimation = Tween<double>(
-      begin: animatedProgress.value,
+      begin: _lastProgress,
       end: targetProgress,
     ).animate(CurvedAnimation(
       parent: _animationController,
-      curve: Curves.easeInOut,
+      curve: Curves.linear,
     ));
 
+    _lastProgress = targetProgress;
     _animationController.forward(from: 0.0);
   }
 
   double getProgress() {
-    if (!isStarted.value) return 1.0;
+    if (!isStarted.value) return 0.0;
     return animatedProgress.value;
   }
 } 

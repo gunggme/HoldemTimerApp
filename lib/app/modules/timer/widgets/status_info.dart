@@ -3,79 +3,95 @@ import 'package:get/get.dart';
 import '../controllers/timer_controller.dart';
 
 class StatusInfo extends GetView<TimerController> {
-  const StatusInfo({Key? key}) : super(key: key);
+  final double size;
+
+  const StatusInfo({
+    Key? key,
+    this.size = 300,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // 크기에 비례하는 값들 계산
+    final titleTextSize = size * 0.043; // 13/300 = 0.043
+    final labelTextSize = size * 0.037; // 11/300 = 0.037
+    final valueTextSize = size * 0.04; // 12/300 = 0.04
+    final dividerHeight = size * 0.007; // 2/300 = 0.007
+    final thinDividerHeight = size * 0.003; // 1/300 = 0.003
+    final padding = size * 0.067; // 20/300 = 0.067
+    final paddingSmall = size * 0.05; // 15/300 = 0.05
+    final spacingSmall = size * 0.017; // 5/300 = 0.017
+    final spacingTiny = size * 0.003; // 1/300 = 0.003
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      padding: EdgeInsets.symmetric(horizontal: padding, vertical: paddingSmall),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildDivider(),
-          const Text(
+          _buildDivider(dividerHeight),
+          Text(
             'Status',
             style: TextStyle(
               color: Colors.grey,
-              fontSize: 13,
+              fontSize: titleTextSize,
               fontWeight: FontWeight.w500,
             ),
           ),
-          _buildTitleDivider(),
-          const SizedBox(height: 5),
-          Obx(() => _buildStatusRow('Players', '${controller.currentPlayers}/${controller.maxPlayers}')),
-          Obx(() => _buildStatusRow('Entries', controller.entries.toString())),
-          Obx(() => _buildStatusRow('Rebuys', controller.rebuys.toString())),
-          Obx(() => _buildStatusRow('Add-ons', controller.addOns.toString())),
-          const SizedBox(height: 5),
-          _buildDivider(),
-          const SizedBox(height: 1),
-          const Text(
+          _buildTitleDivider(thinDividerHeight),
+          SizedBox(height: spacingSmall),
+          Obx(() => _buildStatusRow('Players', '${controller.currentPlayers}/${controller.maxPlayers}', labelTextSize, valueTextSize)),
+          Obx(() => _buildStatusRow('Entries', controller.entries.toString(), labelTextSize, valueTextSize)),
+          Obx(() => _buildStatusRow('Rebuys', controller.rebuys.toString(), labelTextSize, valueTextSize)),
+          Obx(() => _buildStatusRow('Add-ons', controller.addOns.toString(), labelTextSize, valueTextSize)),
+          SizedBox(height: spacingSmall),
+          _buildDivider(dividerHeight),
+          SizedBox(height: spacingTiny),
+          Text(
             'Statistics',
             style: TextStyle(
               color: Colors.grey,
-              fontSize: 13,
+              fontSize: titleTextSize,
               fontWeight: FontWeight.w500,
             ),
           ),
-          _buildTitleDivider(),
-          const SizedBox(height: 5),
-          Obx(() => _buildStatusRow('Total chip', controller.totalChips.value.toString())),
-          Obx(() => _buildStatusRow('Total prize', controller.totalPrize.value.toString())),
-          const SizedBox(height: 5),
-          _buildDivider(),
-          const SizedBox(height: 1),
-          const Text(
+          _buildTitleDivider(thinDividerHeight),
+          SizedBox(height: spacingSmall),
+          Obx(() => _buildStatusRow('Total chip', controller.totalChips.value.toString(), labelTextSize, valueTextSize)),
+          Obx(() => _buildStatusRow('Total prize', controller.totalPrize.value.toString(), labelTextSize, valueTextSize)),
+          SizedBox(height: spacingSmall),
+          _buildDivider(dividerHeight),
+          SizedBox(height: spacingTiny),
+          Text(
             'Join QRCode',
             style: TextStyle(
               color: Colors.grey,
-              fontSize: 13,
+              fontSize: titleTextSize,
               fontWeight: FontWeight.w500,
             ),
           ),
-          _buildTitleDivider(),
-          const SizedBox(height: 5),
+          _buildTitleDivider(dividerHeight),
+          Image.asset('assets/images/test_qr_code.png', height: size / 3.2, width: size / 3.2,),
         ],
       ),
     );
   }
 
-  Widget _buildDivider() {
+  Widget _buildDivider(double height) {
     return Container(
-      height: 2,
+      height: height,
       color: const Color(0xFF4E4E4E),
     );
   }
 
-  Widget _buildTitleDivider() {
+  Widget _buildTitleDivider(double height) {
     return Container(
-      height: 1,
+      height: height,
       color: const Color(0xFF4E4E4E),
     );
   }
 
-  Widget _buildStatusRow(String label, String value) {
+  Widget _buildStatusRow(String label, String value, double labelSize, double valueSize) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
@@ -83,46 +99,18 @@ class StatusInfo extends GetView<TimerController> {
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.grey,
-              fontSize: 11,
+              fontSize: labelSize,
               fontWeight: FontWeight.w400,
             ),
           ),
           const SizedBox(width: 10),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPrizeRow(String place, String amount) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            place,
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Text(
-            '$amount P',
-            style: const TextStyle(
-              color: Color(0xFFFFD700),
-              fontSize: 14,
+              fontSize: valueSize,
               fontWeight: FontWeight.w500,
             ),
           ),

@@ -12,6 +12,8 @@ class TimerView extends GetView<TimerController> {
 
   @override
   Widget build(BuildContext context) {
+    const baseSize = 320.0;
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -57,23 +59,23 @@ class TimerView extends GetView<TimerController> {
         children: [
           // 왼쪽 영역 (Blinds)
           Expanded(
-            flex: 1,
+            flex: 2,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
-                BlindsText(),
+                BlindsText(size: 350),
               ],
             ),
           ),
           // 중앙 영역 (Timer)
           Expanded(
-            flex: 1,
+            flex: 3,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TimerDisplay(
                   controller: controller,
-                  size: 200,
+                  size: baseSize,
                 ),
                 TimerControls(
                   controller: controller,
@@ -83,8 +85,8 @@ class TimerView extends GetView<TimerController> {
             ),
           ),
           const Expanded(
-            flex: 1,
-            child: StatusInfo(),
+            flex: 2,
+            child: StatusInfo(size: baseSize),
           ),
         ],
       ),

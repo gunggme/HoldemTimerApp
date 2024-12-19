@@ -18,47 +18,42 @@ class TimerDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final levelTextSize = size * 0.067;
+    final timerTextSize = size * 0.167;
+
     return Stack(
       alignment: Alignment.center,
       children: [
+        // 타이머 원형 프로그레스
         SizedBox(
           width: size,
           height: size,
-          child: Transform.rotate(
-            angle: 3.14159,
-            child: CustomPaint(
-              painter: TimerPainter(controller),
-            ),
+          child: CustomPaint(
+            painter: TimerPainter(controller, size),
           ),
         ),
-        if (showSpinner)
-          SizedBox(
-            width: size,
-            height: size,
-            child: Obx(() => controller.isRunning.value
-                ? CustomSpinningAnimation(
-                    color: const Color(0xFF9438F5),
-                  )
-                : const SizedBox()),
-          ),
+        // 중앙 텍스트
         Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            // TODO 레벨 및 쉬는 시간 지정 해야함
-            Obx(() => Text("Level ${controller.testLevelValue}",
-              style: const TextStyle(
-              fontSize: 15,
-              color: Colors.grey,
-            ),)),
             Obx(() => Text(
-              '00:${controller.minutes.toString().padLeft(2, '0')}:${controller.seconds.toString().padLeft(2, '0')}',
-              style: const TextStyle(
-                fontSize: 30,
-                color: Color(0xFF9438F5),
+              '${controller.minutes.toString().padLeft(2, '0')}:${controller.seconds.toString().padLeft(2, '0')}',
+              style: TextStyle(
+                fontSize: timerTextSize,
+                color: const Color(0xFF9438F5),
                 fontWeight: FontWeight.bold,
               ),
             )),
+            const SizedBox(height: 8),
+            Obx(() => Text(
+              "Level ${controller.testLevelValue}",
+              style: TextStyle(
+                fontSize: levelTextSize,
+                color: Colors.grey,
+              ),
+            )),
           ],
-        )
+        ),
       ],
     );
   }

@@ -1,103 +1,156 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import '../controllers/timer_controller.dart';
 
 class TimerPainter extends CustomPainter {
   final TimerController controller;
+  final double size;
 
-  TimerPainter(this.controller);
+  TimerPainter(this.controller, this.size);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2 - 10);
-    var radius = size.width / 2;
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2;
+    const totalTicks = 40;
 
-    // 1. 배경 눈금 그리기
+    // 눈금과 path 관련 크기 계산 분리
+    final tickLength = size.width * 0.15;
+    final tickWidth = size.width * 0.02;
+    final pathWidth = size.width * 0.3;
+    final pathLength = size.width * 0.2;
+    
+    // 호를 더 넓게 감싸도록 각도 조정
+    final startAngle = math.pi + 0.6;
+    final endAngle = -0.6;
+    
+    final tickRadius = radius;
+    final pathRadius = radius + 5;
+    final pathStartRadius = radius + 5;
+    
+    final pathStartAngle = startAngle + 0.15;
+
+    // 배경 영역 설정
+    final bounds = Rect.fromLTWH(0, 0, size.width, size.height);
+    canvas.saveLayer(bounds, Paint());
+
+    // 눈금 그리기
     final tickPath = Path();
-    const tickLength = 20.0;
-    const totalTicks = 30;
+    for (var i = 0; i <= totalTicks; i++) {
+      final angle = startAngle - ((startAngle - endAngle) * i / totalTicks);
 
-    List<Offset> tickPoints = [];
-    for (var i = 0; i < totalTicks; i++) {
-      final angle = (math.pi * i - 10) / (totalTicks / 1.34);
-      final x1 = center.dx + (radius - tickLength) * math.cos(angle);
-      final y1 = center.dy + (radius - tickLength) * math.sin(angle);
-      final x2 = center.dx + radius * math.cos(angle);
-      final y2 = center.dy + radius * math.sin(angle);
+      final innerX = center.dx + (tickRadius - tickLength) * math.cos(angle);
+      final innerY = center.dy - (tickRadius - tickLength) * math.sin(angle);
+      final outerX = center.dx + tickRadius * math.cos(angle);
+      final outerY = center.dy - tickRadius * math.sin(angle);
 
-      tickPath.moveTo(x1, y1);
-      tickPath.lineTo(x2, y2);
-      
-      // 눈금의 안쪽 점 저장
-      tickPoints.add(Offset(x1, y1));
+      final tickRect = Path()
+        ..moveTo(innerX, innerY)
+        ..lineTo(outerX, outerY);
+
+      tickPath.addPath(tickRect, Offset.zero);
     }
 
     // 배경 눈금 그리기
     canvas.drawPath(
-      tickPath,
-      Paint()
-        ..color = Colors.grey[800]!
-        ..strokeWidth = 4
-        ..style = PaintingStyle.stroke
-    );
-
-    // 2. 프로그레스 라인 그리기
-    if (controller.isStarted.value) {
-      final progress = controller.getProgress();
-      
-      // 마스킹을 위한 레이어 생성
-      final bounds = Rect.fromLTWH(0, 0, size.width, size.height);
-      canvas.saveLayer(bounds, Paint());
-
-      // 마스크로 사용할 눈금 그리기
-      canvas.drawPath(
         tickPath,
         Paint()
           ..color = Colors.grey[800]!
-          ..strokeWidth = 4
-          ..style = PaintingStyle.stroke
-      );
+          ..strokeWidth = tickWidth
+          ..strokeCap = StrokeCap.round
+          ..style = PaintingStyle.stroke);
 
-      final progressPath = Path();
+    // 프로그레스 그리기
+    if (controller.isStarted.value) {
+      final animatedProgress = controller.animatedProgress.value;
       
-      // 진행된 만큼의 눈금 포인트 계산
-      final progressPoints = (progress * tickPoints.length).floor();
+      // 더 세밀한 진행 상태 계산
+      final exactTick = totalTicks * animatedProgress;
+      final progressTicks = exactTick.floor();
+      final partialProgress = exactTick - progressTicks;
       
-      if (progressPoints > 0) {
-        // 첫 번째 점으로 이동
-        progressPath.moveTo(tickPoints[0].dx, tickPoints[0].dy);
+      final progressClip = Path();
+      
+      // 시작점 계산
+      final startX = center.dx + pathStartRadius * math.cos(pathStartAngle);
+      final startY = center.dy - pathStartRadius * math.sin(pathStartAngle);
+      progressClip.moveTo(startX, startY);
+      
+      // 첫 번째 눈금까지 더 부드럽게 연결
+      final firstTickX = center.dx + pathRadius * math.cos(startAngle);
+      final firstTickY = center.dy - pathRadius * math.sin(startAngle);
+      
+      // 컨트롤 포인트 조정으로 더 부드러운 곡선 생성
+      final controlX = center.dx + pathRadius * math.cos(pathStartAngle - 0.15);
+      final controlY = center.dy - pathRadius * math.sin(pathStartAngle - 0.15);
+      
+      progressClip.quadraticBezierTo(controlX, controlY, firstTickX, firstTickY);
+
+      // 이전 점 저장을 위한 변수
+      var prevX = firstTickX;
+      var prevY = firstTickY;
+
+      // 완전한 틱까지 그리기
+      for (var i = 1; i <= progressTicks; i++) {
+        final t = i / totalTicks;
+        final angle = startAngle - ((startAngle - endAngle) * t);
+        final x = center.dx + pathRadius * math.cos(angle);
+        final y = center.dy - pathRadius * math.sin(angle);
         
-        // 각 눈금 포인트를 직선으로 연결
-        for (var i = 1; i < progressPoints; i++) {
-          progressPath.lineTo(tickPoints[i].dx, tickPoints[i].dy);
-        }
+        // 더 부드러운 곡선을 위한 제어점 계산
+        final prevT = (i - 0.5) / totalTicks;
+        final prevAngle = startAngle - ((startAngle - endAngle) * prevT);
         
-        // 마지막 부분 처리
-        if (progressPoints < tickPoints.length) {
-          final nextPoint = tickPoints[progressPoints];
-          final lastPoint = tickPoints[progressPoints - 1];
-          final remainingProgress = (progress * tickPoints.length) - progressPoints;
-          
-          final lastX = lastPoint.dx + (nextPoint.dx - lastPoint.dx) * remainingProgress;
-          final lastY = lastPoint.dy + (nextPoint.dy - lastPoint.dy) * remainingProgress;
-          
-          progressPath.lineTo(lastX, lastY);
-        }
+        final controlX = center.dx + (pathRadius + 3) * math.cos(prevAngle);
+        final controlY = center.dy - (pathRadius + 3) * math.sin(prevAngle);
+        
+        progressClip.quadraticBezierTo(controlX, controlY, x, y);
       }
 
-      // 프로그레스 라인 그리기
+      // 현재 진행 중인 부분 그리기
+      if (partialProgress > 0) {
+        final currentT = progressTicks / totalTicks;
+        final nextT = (progressTicks + 1) / totalTicks;
+        final t = currentT + (nextT - currentT) * partialProgress;
+        
+        final angle = startAngle - ((startAngle - endAngle) * t);
+        final x = center.dx + pathRadius * math.cos(angle);
+        final y = center.dy - pathRadius * math.sin(angle);
+        
+        final prevT = (progressTicks + 0.5) / totalTicks;
+        final controlAngle = startAngle - ((startAngle - endAngle) * prevT);
+        final controlX = center.dx + (pathRadius + 3) * math.cos(controlAngle);
+        final controlY = center.dy - (pathRadius + 3) * math.sin(controlAngle);
+        
+        progressClip.quadraticBezierTo(controlX, controlY, x, y);
+      }
+
+      progressClip.lineTo(center.dx, center.dy);
+      progressClip.lineTo(startX, startY);
+      progressClip.close();
+
+      canvas.clipPath(progressClip);
+
       canvas.drawPath(
-        progressPath,
-        Paint()
-          ..color = const Color(0xFF9438F5)
-          ..strokeWidth = 40
-          ..style = PaintingStyle.stroke
-          ..strokeCap = StrokeCap.square
-          ..blendMode = BlendMode.srcIn
+          tickPath,
+          Paint()
+            ..color = const Color(0xFF9438F5)
+            ..strokeWidth = pathWidth
+            ..strokeCap = StrokeCap.round
+            ..style = PaintingStyle.stroke
+            ..blendMode = BlendMode.srcIn
       );
-      
-      canvas.restore();
     }
+
+    canvas.restore();
+  }
+
+  // 더 부드러운 보간 함수
+  double _smoothStep(double t) {
+    t = (t * t * (3 - 2 * t)).clamp(0.0, 1.0);
+    return t;
   }
 
   @override
