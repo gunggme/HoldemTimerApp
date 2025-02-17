@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:holdemtimerapp/app/controllers/initial_setting_controller.dart';
-import 'package:holdemtimerapp/app/controllers/timer_controller.dart';
 import 'app/routes/app_pages.dart';
+import 'app/controllers/global/socket_controller.dart';
 
 void main() {
-  Get.put(TimerController());
-  Get.put(InitialSettingController());
+  Get.lazyPut(() => SocketController());
 
   runApp(const MyApp());
 }

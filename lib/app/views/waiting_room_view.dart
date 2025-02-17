@@ -75,9 +75,9 @@ class WaitingRoomView extends GetView<InitialSettingController> {
                           style: TextStyle(color: Colors.grey),
                         ),
                         Obx(() => Text(
-                          controller.connectionStatus.value,
-                          style: const TextStyle(color: Colors.green),
-                        )),
+                              "연결 대기 중",
+                              style: const TextStyle(color: Colors.green),
+                            )),
                       ],
                     ),
                   ],
@@ -90,4 +90,4 @@ class WaitingRoomView extends GetView<InitialSettingController> {
       ),
     );
   }
-} 
+}

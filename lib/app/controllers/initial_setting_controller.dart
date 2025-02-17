@@ -1,60 +1,90 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:holdemtimerapp/app/controllers/global/socket_controller.dart';
+import 'package:holdemtimerapp/utils/logger/app_logger.dart';
 import 'package:holdemtimerapp/app/models/connection/server_connection_state.dart';
-import 'dart:async';
 
 class InitialSettingController extends GetxController {
+  final AppLogger logger = const AppLogger('InitialSettingController');
+
   final TextEditingController ipController = TextEditingController();
 
-  final Rx<ServerConnectionState> connectionState =
-      ServerConnectionState.initial.obs;
-  final RxString connectionStatus = '연결 대기중'.obs;
-  final RxBool isIpVerified = false.obs; // IP 검증 상태
-  final RxBool showAuthCodeField = false.obs; // 인증 코드 입력 필드 표시 여부
+  SocketController? socketController;
 
-  RxBool get isConnectionInitial =>
-      (connectionState.value == ServerConnectionState.initial).obs;
   RxBool get isConnectionWaiting =>
-      (connectionState.value == ServerConnectionState.waiting).obs;
-  RxBool get isConnectionConnected =>
-      (connectionState.value == ServerConnectionState.connected).obs;
-  RxBool get isConnectionDisconnected =>
-      (connectionState.value == ServerConnectionState.disconnected).obs;
-  RxBool get isConnectionError =>
-      (connectionState.value == ServerConnectionState.error).obs;
+      socketController?.isConnectionWaiting ?? false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    initPrefs();
+    init();
+    ever(socketController?.connectionState ?? ServerConnectionState.initial.obs,
+        _handleConnectionStateChange);
   }
 
-  Future<void> initPrefs() async {}
+  Future<void> init() async {
+    logger.info('초기화 시작');
+    socketController = Get.find<SocketController>();
+  }
+
+  void _handleConnectionStateChange(ServerConnectionState state) {
+    switch (state) {
+      case ServerConnectionState.initial:
+        break;
+      case ServerConnectionState.waiting:
+        break;
+      case ServerConnectionState.connected:
+        Get.snackbar(
+          '연결 성공',
+          '서버와 연결되었습니다.',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+        );
+        break;
+      case ServerConnectionState.disconnected:
+        break;
+      case ServerConnectionState.error:
+        connectionFailed('서버 연결 중 오류가 발생했습니다.');
+        break;
+    }
+  }
+
+  bool isValidIpAddress(String ip) {
+    final ipRegex = RegExp(
+        r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$');
+    return ipRegex.hasMatch(ip);
+  }
 
   Future<void> connectToServer() async {
-    connectionState.value = ServerConnectionState.waiting;
-    Future.delayed(const Duration(seconds: 3), () {
-      connectionState.value = ServerConnectionState.connected;
-      Get.snackbar(
-        '연결 성공',
-        '서버와 연결되었습니다.',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.TOP,
-        duration: const Duration(seconds: 2),
-      );
-    });
+    if (!isValidIpAddress(ipController.text)) {
+      connectionFailed('올바른 IP 주소를 입력해주세요.');
+      return;
+    }
+
+    if (isCanConnect()) {
+      socketController?.connect(ipController.text);
+    }
   }
 
   bool isCanConnect() {
-    if (connectionState.value == ServerConnectionState.initial &&
-        ipController.text.isNotEmpty) {
-      return true;
+    if (socketController == null) {
+      connectionFailed('소켓 컨트롤러가 초기화되지 않았습니다.');
+      return false;
     }
+
     if (ipController.text.isEmpty) {
       connectionFailed('IP 주소를 입력해주세요.');
+      return false;
     }
-    return false;
+
+    if (socketController?.connectionState.value ==
+        ServerConnectionState.waiting) {
+      connectionFailed('이미 연결을 시도중입니다.');
+      return false;
+    }
+
+    return true;
   }
 
   void connectionFailed(String explain) {
@@ -65,9 +95,5 @@ class InitialSettingController extends GetxController {
       colorText: Colors.white,
       snackPosition: SnackPosition.TOP,
     );
-  }
-
-  void setConnectionState(ServerConnectionState state) {
-    connectionState.value = state;
   }
 }

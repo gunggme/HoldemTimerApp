@@ -99,7 +99,9 @@ class InitialSettingView extends GetView<InitialSettingController> {
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      controller.connectToServer();
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       shape: RoundedRectangleBorder(
@@ -116,11 +118,20 @@ class InitialSettingView extends GetView<InitialSettingController> {
             ),
           ),
         ),
-        Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: AppColors.black.withOpacity(0.5),
-            child: Center(child: Text("연결 요청 중 입니다.", style: normalText))),
+        Obx(
+          () => Visibility(
+            visible: controller.isConnectionWaiting.value,
+            child: Container(
+                width: double.infinity,
+                height: double.infinity,
+                color: AppColors.black.withOpacity(0.5),
+                child: Center(
+                    child: Text(
+                  "연결 요청 중 입니다.",
+                  style: normalText,
+                ))),
+          ),
+        ),
       ],
     );
   }

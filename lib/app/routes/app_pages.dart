@@ -3,7 +3,7 @@ import '../views/timer_view.dart';
 import '../views/initial_setting_view.dart';
 import '../views/ingame_setting_view.dart';
 import '../views/waiting_room_view.dart';
-
+import '../binding/initial_setting_binding.dart';
 part 'app_routes.dart';
 
 class AppPages {
@@ -15,6 +15,7 @@ class AppPages {
     GetPage(
       name: Routes.INITIAL_SETTING,
       page: () => const InitialSettingView(),
+      binding: InitialSettingBinding(),
     ),
     GetPage(
       name: Routes.WAITING_ROOM,
