@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:holdemtimerapp/app/modules/timer/controllers/initial_setting_controller.dart';
-import 'package:holdemtimerapp/app/modules/timer/controllers/timer_controller.dart';
+import 'package:holdemtimerapp/app/controllers/initial_setting_controller.dart';
+import 'package:holdemtimerapp/app/controllers/timer_controller.dart';
 import 'app/routes/app_pages.dart';
 
 void main() {
