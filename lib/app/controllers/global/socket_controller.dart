@@ -116,16 +116,6 @@ class SocketController extends GetxController {
     }
   }
 
-  void _scheduleReconnect() {
-    _reconnectTimer?.cancel();
-    _reconnectTimer = Timer(Duration(milliseconds: _reconnectDelay), () {
-      if (connectionState.value == ServerConnectionState.error ||
-          connectionState.value == ServerConnectionState.disconnected) {
-        connect(ip.value);
-      }
-    });
-  }
-
   Future<void> handleMessage(String message) async {
     _logger.info('서버 메시지 수신: $message');
     Map<String, dynamic> dataJson = jsonDecode(message);

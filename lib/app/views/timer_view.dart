@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../routes/app_pages.dart';
 import '../controllers/timer_controller.dart';
@@ -13,6 +14,12 @@ class TimerView extends GetView<TimerController> {
   @override
   Widget build(BuildContext context) {
     const baseSize = 320.0;
+
+    // 세로 모드로 고정
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
 
     return Scaffold(
       backgroundColor: Colors.black,

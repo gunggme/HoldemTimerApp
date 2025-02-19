@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:holdemtimerapp/app/constants/app_corlors.dart';
+import 'package:holdemtimerapp/app/routes/app_pages.dart';
 import '../controllers/initial_setting_controller.dart';
 
 class InitialSettingView extends GetView<InitialSettingController> {
@@ -101,6 +102,7 @@ class InitialSettingView extends GetView<InitialSettingController> {
                   child: ElevatedButton(
                     onPressed: () {
                       controller.connectToServer();
+                      Get.offAllNamed(Routes.TIMER);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,

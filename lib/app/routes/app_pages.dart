@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:holdemtimerapp/app/binding/timer_binding.dart';
 import '../views/timer_view.dart';
 import '../views/initial_setting_view.dart';
 import '../views/ingame_setting_view.dart';
@@ -24,6 +25,7 @@ class AppPages {
     GetPage(
       name: Routes.TIMER,
       page: () => const TimerView(),
+      binding: TimerBinding(),
     ),
     GetPage(
       name: Routes.INGAME_SETTING,
